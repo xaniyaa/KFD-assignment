@@ -63,26 +63,31 @@ def handle_transaction(action: str, amount: int, currency_pair: str) -> None:
 
     change_rate = currency_pairs[currency_pair]
 
-    if action == "sell":
+    round_rate = 2
+
+    if (currency_pair.split("/")[1]) == "BTC":
+        round_rate = 10       
+
+    if action.lower().strip() == "sell":
         if (user_money[currency_pair.split("/")[0]] - amount) < 0:
             raise ValueError(
                 f"Недостаточно средств у вас для продажи {currency_pair.split("/")[0]}."
             )
         if (terminal_money[currency_pair.split("/")[1]] - (amount / change_rate)) < 0:
             raise ValueError(
-                f"Недостаточно средств у терминала для продажи {currency_pair.split("/")[0]}."
+                f"Недостаточно средств у терминала для продажи {currency_pair.split("/")[1]}."
             )
-
+        
         cost = amount / change_rate
 
-        user_money[currency_pair.split("/")[1]] += round(cost, 2)
-        user_money[currency_pair.split("/")[0]] -= amount
+        user_money[currency_pair.split("/")[1]] += round(cost, round_rate)
+        user_money[currency_pair.split("/")[0]] = round(user_money[currency_pair.split("/")[0]] - amount, 2)
         terminal_money[currency_pair.split("/")[1]] = round(
-            terminal_money[currency_pair.split("/")[1]] - cost, 2
+            terminal_money[currency_pair.split("/")[1]] - cost, round_rate
         )
         terminal_money[currency_pair.split("/")[0]] += amount
 
-    if action == "buy":
+    if action.lower().strip() == "buy":
         if (user_money[currency_pair.split("/")[0]] - amount * change_rate) < 0:
             raise ValueError(
                 f"Недостаточно средств для покупки {currency_pair.split("/")[1]}."
@@ -93,25 +98,27 @@ def handle_transaction(action: str, amount: int, currency_pair: str) -> None:
             )
 
         user_money[currency_pair.split("/")[0]] = round(
-            user_money[currency_pair.split("/")[0]] - amount * change_rate
+            user_money[currency_pair.split("/")[0]] - amount * change_rate, round_rate
         )
-        user_money[currency_pair.split("/")[1]] = amount
+        user_money[currency_pair.split("/")[1]] += amount
         terminal_money[currency_pair.split("/")[0]] = round(
-            user_money[currency_pair.split("/")[0]] - amount * change_rate
+            terminal_money[currency_pair.split("/")[0]] + amount * change_rate,round_rate 
         )
-        terminal_money[currency_pair.split("/")[1]] -= amount
+        terminal_money[currency_pair.split("/")[1]] = round(terminal_money[currency_pair.split("/")[1]] - amount, round_rate)
 
     print("[*] Вы успешно проверили транзакцию.")
 
 
 def main():
+    os.system("cls")
     while True:
+        
         print_balance()
         print("--------------------------------")
         try:
             action = input("> Введите действие (buy/sell/quit)\n> ")
 
-            if action.lower() == "q" or action.lower() == "quit":
+            if action.lower().strip() == "q" or action.lower().strip() == "quit":
                 break
 
             currency_pair = int(
@@ -129,7 +136,7 @@ def main():
                 f"> Введенный вами данные верны (Y/N)?\n > Действие: {action}\n > Валютную пара: {currency_choice_pairs[currency_pair]}\n > Cумму операции: {amount}\n> "
             )
 
-            if choice.lower() == "y":
+            if choice.lower().strip() == "y":
                 handle_transaction(action, amount, currency_choice_pairs[currency_pair])
                 change_courses()
             os.system("cls")
