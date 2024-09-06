@@ -4,9 +4,8 @@
 
 ## Video Demonstation
 
-[Rutube](https://duckduckgo.com)
-
-[YouTube](https://duckduckgo.com)
+[Rutube](https://rutube.ru/video/private/aede40f789a7ceceaae2fccd35ff8f6e/?p=BJ55MK3zNOxc8Iak6yCLfA)
+<video src='https://rutube.ru/video/private/aede40f789a7ceceaae2fccd35ff8f6e/?p=BJ55MK3zNOxc8Iak6yCLfA' width=180/>
 
 ## How to run the program
 
