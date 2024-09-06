@@ -14,6 +14,8 @@
 
 ## How to run the program
 
+Код программы находится в папке **`src/`**
+
 ### requirements:
 
 python version ^= 3.12.2
